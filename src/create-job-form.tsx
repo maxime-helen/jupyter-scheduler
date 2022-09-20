@@ -1,4 +1,5 @@
-import { Button } from '@jupyterlab/ui-components';
+import Button from '@mui/material/Button';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import {
   ICreateJobFormEnvironmentField,
@@ -60,6 +61,17 @@ export function CreateJobForm(props: CreateJobFormProps): JSX.Element {
       setState(prevState => ({ ...props.initialState }));
     }
   }, [props.initialState]);
+
+  const theme = createTheme({
+    spacing: 2,
+    palette: {
+      primary: {
+        main: getComputedStyle(document.body).getPropertyValue(
+          '--jp-brand-color1'
+        )
+      }
+    }
+  });
 
   const handleInputChange = (event: ChangeEvent) => {
     const target = event.target as HTMLInputElement;
@@ -243,38 +255,37 @@ export function CreateJobForm(props: CreateJobFormProps): JSX.Element {
   ];
 
   return (
-    <div className={`${formPrefix}form-container`}>
-      <form className={`${formPrefix}form`} onSubmit={e => e.preventDefault()}>
-        <CreateJobFormInputs
-          formRow={formRow}
-          formLabel={formLabel}
-          formPrefix={formPrefix}
-          formInput={formInput}
-          fields={formFields}
-        />
-        <div className={formRow}>
-          <div className={formLabel}>&nbsp;</div>
-          <div className={`${formInput} ${formPrefix}submit-container`}>
-            <Button
-              type="button"
-              className="jp-Dialog-button jp-mod-styled"
-              onClick={props.cancelClick}
-            >
-              {trans.__('Cancel')}
-            </Button>
-            <Button
-              type="submit"
-              className="jp-Dialog-button jp-mod-accept jp-mod-styled"
-              onClick={(e: React.MouseEvent) => {
-                submitCreateJobRequest(e);
-                return false;
-              }}
-            >
-              {trans.__('Run Job')}
-            </Button>
+    <ThemeProvider theme={theme}>
+      <div className={`${formPrefix}form-container`}>
+        <form
+          className={`${formPrefix}form`}
+          onSubmit={e => e.preventDefault()}
+        >
+          <CreateJobFormInputs
+            formRow={formRow}
+            formLabel={formLabel}
+            formPrefix={formPrefix}
+            formInput={formInput}
+            fields={formFields}
+          />
+          <div className={formRow}>
+            <div className={formLabel}>&nbsp;</div>
+            <div className={`${formInput} ${formPrefix}submit-container`}>
+              <Button variant="contained" onClick={props.cancelClick}>{trans.__('Cancel')}</Button>
+              <Button
+                variant="contained"
+                onClick={(e: React.MouseEvent) => {
+                  submitCreateJobRequest(e);
+                  return false;
+                }}
+              >
+                {trans.__('Run Job')}
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </ThemeProvider>
+
   );
 }
